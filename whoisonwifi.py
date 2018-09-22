@@ -23,15 +23,14 @@ def get_mac_from_nmap(host, nm):
 		mac = nm[host]['addresses']['mac'].lower()
 	return mac
 
-def log(host, action, nm, mac, vendor):
-	now = datetime.datetime.now().strftime("%Y-%m-%d %I:%M %p")
-	msg = '","'.join([now, host, action, mac])
+def log(nm, host, action, mac, vendor):
+	msg = datetime.datetime.now().strftime("%Y-%m-%d %I:%M %p")
+	msg = '","'.join([msg, action, mac, host])
 
-	if mac != '':
-		if mac not in knowns:
-			msg = '","'.join([msg, 'UNKNOWN'])
-		else:
-			msg = '","'.join([msg, knowns[mac]])
+	if mac not in knowns:
+		msg = '","'.join([msg, 'UNKNOWN'])
+	else:
+		msg = '","'.join([msg, knowns[mac]])
 	msg = '","'.join([msg, vendor])
 	msg = '"%s"' % (msg)
 	print(msg)
@@ -45,7 +44,7 @@ while True:
 	# check who left
 	all_hosts = nm.all_hosts()
 	for host in set(hosts.keys()).difference(all_hosts):
-		log('DISCONNECT', host, nm, hosts[host], '')
+		log(nm, host, 'LEFT', hosts[host], '')
 		hosts.pop(host)
 
 	# check connected hosts
@@ -59,5 +58,5 @@ while True:
 				key = next(iter(nm[host]['vendor']))
 				vendor = nm[host]['vendor'][key]
 
-			log('CONNECTED', host, nm, mac, vendor)
+			log(nm, host, 'JOIN', mac, vendor)
 	time.sleep(interval_seconds)

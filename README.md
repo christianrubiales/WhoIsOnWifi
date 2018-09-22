@@ -7,7 +7,7 @@ Uses nmap, install it first on your OS.
 ## Installation
 
 ```
-pip install nyfy python-nmap tailer
+pip install ntfy python-nmap tailer
 ```
 
 ## Run `notifier.py` without `sudo`, Run `whoisonwifi.py` with `sudo`
